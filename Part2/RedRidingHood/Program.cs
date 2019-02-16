@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 enum Scene
 {
@@ -11,36 +12,41 @@ enum Scene
 
 public class RedRidingHoodGame
 {
-    private Scene[] locations;
     private int currentPosition;
+    private string[] environmentDescriptions;
 
     public RedRidingHoodGame()
     {
-        locations = new Scene[5];
+        currentPosition = (int)Scene.Bedroom;
 
-        locations[0] = Scene.Kitchen;
-        locations[1] = Scene.Bedroom;
-        locations[2] = Scene.NeighborsHouse;
-        locations[3] = Scene.Bakery;
-        locations[4] = Scene.InsideBakery;
-
-        currentPosition = 1;
+        environmentDescriptions = new string[5];
+        environmentDescriptions[(int)Scene.Kitchen] = "You are in the kitchen, you notice there is some wine on the table";
+        environmentDescriptions[(int)Scene.Bedroom] = "You are in the bedroom, you seem to have drank to much yesterday and feel hungover";
+        environmentDescriptions[(int)Scene.NeighborsHouse] = "You are in front of the neighbors house, they have a basket with a sleeping baby in it";
+        environmentDescriptions[(int)Scene.Bakery] = "You are at the bakery, you can look through the glass window to the inside";
+        environmentDescriptions[(int)Scene.InsideBakery] = "You are inside of the bakery there is a lot of food here";
     }
 
     public void Play()
     {
         Console.WriteLine("Booting up game... ");
-        Console.WriteLine("To exit, press 'escape' \n\n");
 
         ConsoleKey key = ConsoleKey.NoName;
-        while (key != ConsoleKey.Escape && key != ConsoleKey.B)
+        while (key != ConsoleKey.B)
         {
             DescribeCurrentEnvironment();
 
             if (currentPosition != 0)
-                Console.WriteLine("To move to the {0}, type 'A'", locations[currentPosition - 1].ToString());
+            {
+                Scene leftScene = (Scene) (currentPosition - 1);
+                Console.WriteLine("To move to the {0}, type 'A'", leftScene.ToString());
+            }
+
             if (currentPosition != 4)
-                Console.WriteLine("To move to the {0}, type 'D'", locations[currentPosition + 1].ToString());
+            {
+                Scene rightScene = (Scene) (currentPosition + 1);
+                Console.WriteLine("To move to the {0}, type 'D'", rightScene.ToString());
+            }
             Console.WriteLine("To go back to the main menu, press 'B'");
 
             key = Console.ReadKey().Key;
@@ -69,29 +75,8 @@ public class RedRidingHoodGame
 
     private void DescribeCurrentEnvironment()
     {
-        Scene currentLocation = locations[currentPosition];
-
-        switch (currentLocation)
-        {
-            case Scene.Kitchen:
-                Console.WriteLine("You are in the kitchen, you notice there is some wine on the table");
-                break;
-            case Scene.Bedroom:
-                Console.WriteLine("You are in the bedroom, you seem to have drank to much yesterday and feel hungover");
-                break;
-            case Scene.NeighborsHouse:
-                Console.WriteLine("You are in front of the neighbors house, they have a basket with a sleeping baby in it");
-                break;
-            case Scene.Bakery:
-                Console.WriteLine("You are at the bakery, you can look through the glass window to the inside");
-                break;
-            case Scene.InsideBakery:
-                Console.WriteLine("You are inside of the bakery there is a lot of food here");
-                break;
-            default:
-                Console.WriteLine("You enter a strange environment even the program doesn't know how to describe...");
-                break;
-        }
+        string description = environmentDescriptions[currentPosition];
+        Console.WriteLine(description);
     }
 }
 
@@ -142,7 +127,7 @@ class Program
                 Console.Clear();
                 Console.WriteLine("What shall be the game name?");
                 Console.Write("\n>");
-                string name = Console.In.ReadLine();
+                string name = Console.ReadLine();
                 Console.WriteLine("The name of the game is {0}\n",name);
 
                 RedRidingHoodGame game = new RedRidingHoodGame();
